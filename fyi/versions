@@ -1,0 +1,30 @@
+File: semgrep-grammars/src/tree-sitter-move-on-aptos/LICENSE
+Git repo name: tree-sitter-move-on-aptos
+Latest commit in repo: 6eaf726bcc766bb9421160109652867ac189757e
+Last change in file:
+  commit 5d7db449f55cc726c400e6f5d501d934c380f53e
+  Author: Andrea Cappa (zi0Black) <13380579+zi0Black@users.noreply.github.com>
+  Date:   Fri Jun 7 00:54:55 2024 +0200
+  
+      Update LICENSE
+---
+File: semgrep-grammars/src/tree-sitter-move-on-aptos/grammar.js
+Git repo name: tree-sitter-move-on-aptos
+Latest commit in repo: 6eaf726bcc766bb9421160109652867ac189757e
+Last change in file:
+  commit 066378480919610fee94cbfa43591d31eef0629a
+  Author: ArArgon <liaozping@gmail.com>
+  Date:   Thu Jun 6 13:58:04 2024 -0700
+  
+      fix: exclude bad test case, improve error handling
+---
+File: semgrep-grammars/src/semgrep-move-on-aptos/grammar.js
+Git repo name: ocaml-tree-sitter-semgrep
+Latest commit in repo: 24bf7dccd3242a0bcdea26f088a207ed24bff4c7
+Last change in file:
+  commit bc0dfb66358114c9b4c923b99c8023bca83b55e2
+  Author: ArArgon <liaozping@gmail.com>
+  Date:   Thu Jun 6 16:36:26 2024 -0700
+  
+      feat: initial commit for integration with semgrep
+---
