@@ -20,11 +20,11 @@ Last change in file:
 ---
 File: semgrep-grammars/src/semgrep-move-on-aptos/grammar.js
 Git repo name: ocaml-tree-sitter-semgrep
-Latest commit in repo: 6d49c0e8ec55adcefb5ee23df4ebf55da9d3b266
+Latest commit in repo: 7c526b1ee069e8ee1b2012dc9f7ffa9d93b259ee
 Last change in file:
-  commit 6d49c0e8ec55adcefb5ee23df4ebf55da9d3b266
+  commit 7c526b1ee069e8ee1b2012dc9f7ffa9d93b259ee
   Author: ArArgon <liaozping@gmail.com>
-  Date:   Fri Jun 21 13:57:38 2024 -0700
+  Date:   Fri Jun 21 16:09:31 2024 -0700
   
-      fix: support matching let expressions
+      chore: remove unnecessary conflicts
 ---
