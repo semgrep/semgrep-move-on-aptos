@@ -854,6 +854,9 @@ let rec map_bind (env : env) (x : CST.bind) =
       let v3 = map_bind_fields env v3 in
       R.Tuple [v1; v2; v3]
     )
+  | `Ellips tok -> R.Case ("Ellips",
+      (* "..." *) token env tok
+    )
   )
 
 and map_bind_field (env : env) (x : CST.bind_field) =

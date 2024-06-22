@@ -368,6 +368,7 @@ type bind = [
       * type_args option
       * bind_fields
     )
+  | `Ellips of Token.t (* "..." *)
 ]
 
 and bind_field = [

@@ -635,6 +635,7 @@ let children_regexps : (string * Run.exp option) list = [
         );
         Token (Name "bind_fields");
       ];
+      Token (Name "ellipsis");
     |];
   );
   "bind_field",
@@ -3504,6 +3505,10 @@ let rec trans_bind ((kind, body) : mt) : CST.bind =
                 )
             | _ -> assert false
             )
+          )
+      | Alt (2, v) ->
+          `Ellips (
+            trans_ellipsis (Run.matcher_token v)
           )
       | _ -> assert false
       )
