@@ -1999,10 +1999,17 @@ and map_return_expr (env : env) (x : CST.return_expr) =
     )
   )
 
-and map_sequence_item (env : env) ((v1, v2) : CST.sequence_item) =
-  let v1 = map_anon_choice_expr_ae0e30e env v1 in
-  let v2 = (* ";" *) token env v2 in
-  R.Tuple [v1; v2]
+and map_sequence_item (env : env) (x : CST.sequence_item) =
+  (match x with
+  | `Choice_expr_SEMI (v1, v2) -> R.Case ("Choice_expr_SEMI",
+      let v1 = map_anon_choice_expr_ae0e30e env v1 in
+      let v2 = (* ";" *) token env v2 in
+      R.Tuple [v1; v2]
+    )
+  | `Ellips tok -> R.Case ("Ellips",
+      (* "..." *) token env tok
+    )
+  )
 
 and map_spec_apply (env : env) ((v1, v2, v3, v4, v5, v6, v7) : CST.spec_apply) =
   let v1 = (* "apply" *) token env v1 in

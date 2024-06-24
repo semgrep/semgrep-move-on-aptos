@@ -778,7 +778,10 @@ and return_expr = [
   | `Ret_expr of (Token.t (* "return" *) * expr)
 ]
 
-and sequence_item = (anon_choice_expr_ae0e30e * Token.t (* ";" *))
+and sequence_item = [
+    `Choice_expr_SEMI of (anon_choice_expr_ae0e30e * Token.t (* ";" *))
+  | `Ellips of Token.t (* "..." *)
+]
 
 and spec_apply = (
     Token.t (* "apply" *)

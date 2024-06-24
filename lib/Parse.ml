@@ -1582,13 +1582,16 @@ let children_regexps : (string * Run.exp option) list = [
   );
   "sequence_item",
   Some (
-    Seq [
-      Alt [|
-        Token (Name "expr");
-        Token (Name "let_expr");
-      |];
-      Token (Literal ";");
-    ];
+    Alt [|
+      Seq [
+        Alt [|
+          Token (Name "expr");
+          Token (Name "let_expr");
+        |];
+        Token (Literal ";");
+      ];
+      Token (Name "ellipsis");
+    |];
   );
   "spec_apply",
   Some (
@@ -5471,21 +5474,31 @@ and trans_sequence_item ((kind, body) : mt) : CST.sequence_item =
   match body with
   | Children v ->
       (match v with
-      | Seq [v0; v1] ->
-          (
-            (match v0 with
-            | Alt (0, v) ->
-                `Expr (
-                  trans_expr (Run.matcher_token v)
-                )
-            | Alt (1, v) ->
-                `Let_expr (
-                  trans_let_expr (Run.matcher_token v)
+      | Alt (0, v) ->
+          `Choice_expr_SEMI (
+            (match v with
+            | Seq [v0; v1] ->
+                (
+                  (match v0 with
+                  | Alt (0, v) ->
+                      `Expr (
+                        trans_expr (Run.matcher_token v)
+                      )
+                  | Alt (1, v) ->
+                      `Let_expr (
+                        trans_let_expr (Run.matcher_token v)
+                      )
+                  | _ -> assert false
+                  )
+                  ,
+                  Run.trans_token (Run.matcher_token v1)
                 )
             | _ -> assert false
             )
-            ,
-            Run.trans_token (Run.matcher_token v1)
+          )
+      | Alt (1, v) ->
+          `Ellips (
+            trans_ellipsis (Run.matcher_token v)
           )
       | _ -> assert false
       )
