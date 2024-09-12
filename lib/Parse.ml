@@ -34,8 +34,11 @@ let extras = [
 ]
 
 let children_regexps : (string * Run.exp option) list = [
+  "imm_tok_prec_p1_pat_4fd4a56", None;
   "phantom", None;
   "imm_tok_lt", None;
+  "imm_tok_prec_p2_slashslash", None;
+  "doc_line_comment", None;
   "quantifier_directive",
   Some (
     Alt [|
@@ -63,10 +66,14 @@ let children_regexps : (string * Run.exp option) list = [
       Token (Literal "u256");
     |];
   );
+  "imm_tok_prec_p2_slash", None;
+  "block_doc_comment_marker", None;
+  "block_comment_content", None;
   "tok_xdquot_pat_92a0a93_dquot", None;
   "module_keyword", None;
   "ellipsis", None;
   "pat_0x", None;
+  "pat_4fd4a56", None;
   "visibility",
   Some (
     Seq [
@@ -112,6 +119,24 @@ let children_regexps : (string * Run.exp option) list = [
       Token (Literal "vector");
     |];
   );
+  "block_comment",
+  Some (
+    Seq [
+      Token (Literal "/*");
+      Opt (
+        Alt [|
+          Seq [
+            Token (Name "block_doc_comment_marker");
+            Opt (
+              Token (Name "block_comment_content");
+            );
+          ];
+          Token (Name "block_comment_content");
+        |];
+      );
+      Token (Literal "*/");
+    ];
+  );
   "byte_string",
   Some (
     Alt [|
@@ -130,6 +155,23 @@ let children_regexps : (string * Run.exp option) list = [
       |];
       Token (Name "ellipsis");
     |];
+  );
+  "line_comment",
+  Some (
+    Seq [
+      Token (Literal "//");
+      Alt [|
+        Seq [
+          Token (Name "imm_tok_prec_p2_slashslash");
+          Token (Name "pat_4fd4a56");
+        ];
+        Seq [
+          Token (Name "imm_tok_prec_p2_slash");
+          Token (Name "doc_line_comment");
+        ];
+        Token (Name "imm_tok_prec_p1_pat_4fd4a56");
+      |];
+    ];
   );
   "module_member_modifier",
   Some (
@@ -2413,6 +2455,10 @@ let children_regexps : (string * Run.exp option) list = [
 ]
 
 
+let trans_imm_tok_prec_p1_pat_4fd4a56 ((kind, body) : mt) : CST.imm_tok_prec_p1_pat_4fd4a56 =
+  match body with
+  | Leaf v -> v
+  | Children _ -> assert false
 
 let trans_phantom ((kind, body) : mt) : CST.phantom =
   match body with
@@ -2424,7 +2470,15 @@ let trans_imm_tok_lt ((kind, body) : mt) : CST.imm_tok_lt =
   | Leaf v -> v
   | Children _ -> assert false
 
+let trans_imm_tok_prec_p2_slashslash ((kind, body) : mt) : CST.imm_tok_prec_p2_slashslash =
+  match body with
+  | Leaf v -> v
+  | Children _ -> assert false
 
+let trans_doc_line_comment ((kind, body) : mt) : CST.doc_line_comment =
+  match body with
+  | Leaf v -> v
+  | Children _ -> assert false
 
 let trans_quantifier_directive ((kind, body) : mt) : CST.quantifier_directive =
   match body with
@@ -2513,8 +2567,20 @@ let trans_number_type ((kind, body) : mt) : CST.number_type =
       )
   | Leaf _ -> assert false
 
+let trans_imm_tok_prec_p2_slash ((kind, body) : mt) : CST.imm_tok_prec_p2_slash =
+  match body with
+  | Leaf v -> v
+  | Children _ -> assert false
 
+let trans_block_doc_comment_marker ((kind, body) : mt) : CST.block_doc_comment_marker =
+  match body with
+  | Leaf v -> v
+  | Children _ -> assert false
 
+let trans_block_comment_content ((kind, body) : mt) : CST.block_comment_content =
+  match body with
+  | Leaf v -> v
+  | Children _ -> assert false
 
 let trans_tok_xdquot_pat_92a0a93_dquot ((kind, body) : mt) : CST.tok_xdquot_pat_92a0a93_dquot =
   match body with
@@ -2536,6 +2602,10 @@ let trans_pat_0x ((kind, body) : mt) : CST.pat_0x =
   | Leaf v -> v
   | Children _ -> assert false
 
+let trans_pat_4fd4a56 ((kind, body) : mt) : CST.pat_4fd4a56 =
+  match body with
+  | Leaf v -> v
+  | Children _ -> assert false
 
 let trans_visibility ((kind, body) : mt) : CST.visibility =
   match body with
@@ -2659,6 +2729,43 @@ let trans_primitive_type ((kind, body) : mt) : CST.primitive_type =
       )
   | Leaf _ -> assert false
 
+let trans_block_comment ((kind, body) : mt) : CST.block_comment =
+  match body with
+  | Children v ->
+      (match v with
+      | Seq [v0; v1; v2] ->
+          (
+            Run.trans_token (Run.matcher_token v0),
+            Run.opt
+              (fun v ->
+                (match v with
+                | Alt (0, v) ->
+                    `Blk_doc_comm_marker_opt_blk_comm_content (
+                      (match v with
+                      | Seq [v0; v1] ->
+                          (
+                            trans_block_doc_comment_marker (Run.matcher_token v0),
+                            Run.opt
+                              (fun v -> trans_block_comment_content (Run.matcher_token v))
+                              v1
+                          )
+                      | _ -> assert false
+                      )
+                    )
+                | Alt (1, v) ->
+                    `Blk_comm_content (
+                      trans_block_comment_content (Run.matcher_token v)
+                    )
+                | _ -> assert false
+                )
+              )
+              v1
+            ,
+            Run.trans_token (Run.matcher_token v2)
+          )
+      | _ -> assert false
+      )
+  | Leaf _ -> assert false
 
 let trans_byte_string ((kind, body) : mt) : CST.byte_string =
   match body with
@@ -2710,6 +2817,46 @@ let trans_ability ((kind, body) : mt) : CST.ability =
       )
   | Leaf _ -> assert false
 
+let trans_line_comment ((kind, body) : mt) : CST.line_comment =
+  match body with
+  | Children v ->
+      (match v with
+      | Seq [v0; v1] ->
+          (
+            Run.trans_token (Run.matcher_token v0),
+            (match v1 with
+            | Alt (0, v) ->
+                `Imm_tok_prec_p2_slas_pat_4fd4a56 (
+                  (match v with
+                  | Seq [v0; v1] ->
+                      (
+                        trans_imm_tok_prec_p2_slashslash (Run.matcher_token v0),
+                        trans_pat_4fd4a56 (Run.matcher_token v1)
+                      )
+                  | _ -> assert false
+                  )
+                )
+            | Alt (1, v) ->
+                `Imm_tok_prec_p2_slash_doc_line_comm (
+                  (match v with
+                  | Seq [v0; v1] ->
+                      (
+                        trans_imm_tok_prec_p2_slash (Run.matcher_token v0),
+                        trans_doc_line_comment (Run.matcher_token v1)
+                      )
+                  | _ -> assert false
+                  )
+                )
+            | Alt (2, v) ->
+                `Imm_tok_prec_p1_pat_4fd4a56 (
+                  trans_imm_tok_prec_p1_pat_4fd4a56 (Run.matcher_token v)
+                )
+            | _ -> assert false
+            )
+          )
+      | _ -> assert false
+      )
+  | Leaf _ -> assert false
 
 let trans_module_member_modifier ((kind, body) : mt) : CST.module_member_modifier =
   match body with
@@ -7547,14 +7694,53 @@ let trans_source_file ((kind, body) : mt) : CST.source_file =
       )
   | Leaf _ -> assert false
 
+(*
+   Costly operation that translates a whole tree or subtree.
+
+   The first pass translates it into a generic tree structure suitable
+   to guess which node corresponds to each grammar rule.
+   The second pass is a translation into a typed tree where each grammar
+   node has its own type.
+
+   This function is called:
+   - once on the root of the program after removing extras
+     (comments and other nodes that occur anywhere independently from
+     the grammar);
+   - once of each extra node, resulting in its own independent tree of type
+     'extra'.
+*)
+let translate_tree src node trans_x =
+  let matched_tree = Run.match_tree children_regexps src node in
+  Option.map trans_x matched_tree
+
+
+let translate_extra src (node : Tree_sitter_output_t.node) : CST.extra option =
+  match node.type_ with
+  | "line_comment" ->
+      (match translate_tree src node trans_line_comment with
+      | None -> None
+      | Some x -> Some (Line_comment (Run.get_loc node, x)))
+  | "block_comment" ->
+      (match translate_tree src node trans_block_comment with
+      | None -> None
+      | Some x -> Some (Block_comment (Run.get_loc node, x)))
+  | _ -> None
+
+let translate_root src root_node =
+  translate_tree src root_node trans_source_file
+
 let parse_input_tree input_tree =
   let orig_root_node = Tree_sitter_parsing.root input_tree in
   let src = Tree_sitter_parsing.src input_tree in
   let errors = Run.extract_errors src orig_root_node in
-  let root_node = Run.remove_extras ~extras orig_root_node in
-  let matched_tree = Run.match_tree children_regexps src root_node in
-  let opt_program = Option.map trans_source_file matched_tree in
-  Parsing_result.create src opt_program errors
+  let opt_program, extras =
+     Run.translate
+       ~extras
+       ~translate_root:(translate_root src)
+       ~translate_extra:(translate_extra src)
+       orig_root_node
+  in
+  Parsing_result.create src opt_program extras errors
 
 let string ?src_file contents =
   let input_tree = parse_source_string ?src_file contents in

@@ -3,9 +3,6 @@ Git repo name: tree-sitter-move-on-aptos
 Latest commit in repo: d11dd2ca6c4c96e579b9860d577c6b2deb06443e
 Last change in file:
   commit 5d7db449f55cc726c400e6f5d501d934c380f53e
-  gpg: Signature made Thu 06 Jun 2024 03:54:55 PM PDT
-  gpg:                using RSA key B5690EEEBB952194
-  gpg: Good signature from "GitHub <noreply@github.com>" [full]
   Author: Andrea Cappa (zi0Black) <13380579+zi0Black@users.noreply.github.com>
   Date:   Fri Jun 7 00:54:55 2024 +0200
   
@@ -23,7 +20,7 @@ Last change in file:
 ---
 File: semgrep-grammars/src/semgrep-move-on-aptos/grammar.js
 Git repo name: ocaml-tree-sitter-semgrep
-Latest commit in repo: b66e37e14adef586ff29864018359a1edd022eb2
+Latest commit in repo: 837640f5937b0239fc83cf2fc359da6069fc804f
 Last change in file:
   commit b69320f4e4faed6fa91aee57435ffcd23df3e06f
   Author: ArArgon <liaozping@gmail.com>
